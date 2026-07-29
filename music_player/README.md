@@ -2,10 +2,6 @@
 
 A modern, responsive **vinyl-inspired music player** built with **HTML, CSS, and Vanilla JavaScript**. It features a realistic animated vinyl record, playlist management, local audio playback, online audio streaming, and a beautiful dark-themed interface.
 
-![Nightshift Preview](preview.png)
-
-> Replace `preview.png` with your project screenshot (the one above).
-
 ---
 
 ## ✨ Features
@@ -28,9 +24,8 @@ A modern, responsive **vinyl-inspired music player** built with **HTML, CSS, and
 
 ## 📸 Screenshot
 
-<p align="center">
-  <img src="preview.png" width="350">
-</p>
+<img width="220" height="439" alt="image" src="https://github.com/user-attachments/assets/b85be69d-091b-46a1-9722-2722f3db952a" />
+
 
 ---
 
