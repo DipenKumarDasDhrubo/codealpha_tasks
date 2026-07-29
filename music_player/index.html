@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nightshift — Music Player</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<main class="player-app">
+
+  <!-- Signature element: spinning record + tonearm -->
+  <div class="disc-stage" aria-hidden="true">
+    <div class="tonearm" id="tonearm">
+      <div class="tonearm-head"></div>
+    </div>
+    <div class="disc" id="disc">
+      <div class="disc-label">
+        <span class="disc-label-text" id="discInitials">MC</span>
+      </div>
+      <div class="disc-groove"></div>
+      <div class="disc-groove disc-groove--outer"></div>
+    </div>
+  </div>
+
+  <!-- Track info -->
+  <header class="track-info">
+    <p class="eyebrow" id="trackCounter">Track 1 of 4</p>
+    <h1 class="track-title" id="trackTitle">Loading…</h1>
+    <p class="track-artist" id="trackArtist">—</p>
+  </header>
+
+  <!-- Progress -->
+  <section class="progress-row" aria-label="Playback position">
+    <span class="time-readout" id="currentTime">0:00</span>
+    <input type="range" id="seekBar" class="seek-bar" min="0" max="100" value="0" step="0.1"
+           aria-label="Seek position">
+    <span class="time-readout" id="durationTime">0:00</span>
+  </section>
+
+  <!-- Transport controls -->
+  <section class="controls-row" aria-label="Playback controls">
+    <button class="ctrl-btn ctrl-btn--sm" id="prevBtn" aria-label="Previous track">
+      <svg viewBox="0 0 24 24"><path d="M6 5h2v14H6zM9.5 12 20 5v14z"/></svg>
+    </button>
+
+    <button class="ctrl-btn ctrl-btn--play" id="playBtn" aria-label="Play">
+      <svg id="playIcon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+      <svg id="pauseIcon" viewBox="0 0 24 24" style="display:none;"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>
+    </button>
+
+    <button class="ctrl-btn ctrl-btn--sm" id="nextBtn" aria-label="Next track">
+      <svg viewBox="0 0 24 24"><path d="M16 5h2v14h-2zM4 5l10.5 7L4 19z"/></svg>
+    </button>
+  </section>
+
+  <!-- Volume + autoplay -->
+  <section class="utility-row">
+    <div class="volume-control">
+      <svg class="vol-icon" id="volIcon" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3z"/></svg>
+      <input type="range" id="volumeBar" class="volume-bar" min="0" max="100" value="70" aria-label="Volume">
+    </div>
+
+    <label class="autoplay-toggle">
+      <span class="autoplay-label">Autoplay</span>
+      <input type="checkbox" id="autoplayCheck" checked>
+      <span class="toggle-track" aria-hidden="true"><span class="toggle-thumb"></span></span>
+    </label>
+  </section>
+
+  <!-- Source actions: bring in your own audio -->
+  <section class="source-actions" aria-label="Add music from other sources">
+    <button class="source-btn" id="syncDeviceBtn" type="button">
+      <svg class="source-icon" viewBox="0 0 24 24"><path d="M12 5V2L7 6l5 4V7a5 5 0 1 1-5 5H5a7 7 0 1 0 7-7z"/></svg>
+      <span class="source-text">
+        <strong>Sync device</strong>
+        <small>Add songs from your files</small>
+      </span>
+    </button>
+    <button class="source-btn" id="playOnlineBtn" type="button">
+      <svg class="source-icon" viewBox="0 0 24 24"><path d="M6 19a4 4 0 0 1-1-7.87A5.5 5.5 0 0 1 15.9 8.05 4.5 4.5 0 0 1 18 16.9V17H8a2 2 0 0 1-2-2zm5-3.5 4-2.5-4-2.5z"/></svg>
+      <span class="source-text">
+        <strong>Play online</strong>
+        <small>Stream from a link</small>
+      </span>
+    </button>
+  </section>
+  <input type="file" id="deviceFileInput" accept="audio/*" multiple hidden>
+
+  <!-- Playlist -->
+  <section class="playlist" aria-label="Playlist">
+    <div class="playlist-header">
+      <span class="playlist-eyebrow">Side A</span>
+      <span class="playlist-count" id="playlistCount">4 tracks</span>
+    </div>
+    <ul class="playlist-list" id="playlistList"><!-- injected by script.js --></ul>
+  </section>
+
+  <p class="build-note">Demo tracks are synthesized in your browser. Use the buttons above to add your own files or a direct stream link.</p>
+
+</main>
+
+<!-- Play-online modal -->
+<div class="modal-overlay" id="onlineModalOverlay" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="onlineModalTitle">
+    <h2 id="onlineModalTitle">Play from a link</h2>
+    <p class="modal-hint">
+      Paste a direct audio URL (.mp3, .wav, .ogg…). Services like Spotify keep
+      playback inside their own app for licensing reasons, so this streams any
+      open, direct audio link instead.
+    </p>
+    <label class="modal-field">
+      <span>Audio URL</span>
+      <input type="url" id="onlineUrlInput" placeholder="https://example.com/track.mp3">
+    </label>
+    <label class="modal-field">
+      <span>Title (optional)</span>
+      <input type="text" id="onlineTitleInput" placeholder="Track name">
+    </label>
+    <div class="modal-actions">
+      <button class="modal-btn modal-btn--ghost" id="onlineCancelBtn" type="button">Cancel</button>
+      <button class="modal-btn" id="onlineConfirmBtn" type="button">Add &amp; play</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast notifications -->
+<div class="toast" id="toast" hidden></div>
+
+<script src="script.js"></script>
+</body>
+</html>
