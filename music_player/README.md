@@ -48,13 +48,14 @@ Coming Soon...
 ## 📂 Project Structure
 
 ```text
-Nightshift-Music-Player/
+codealpha_tasks/
 │
-├── index.html
-├── style.css
-├── script.js
-├── preview.png
-└── README.md
+├── music_player/
+│   ├── README.md
+│   ├── index.html
+│   ├── style.css
+│   ├── script.js
+│   └── preview.png   (optional)
 ```
 
 ---
